@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>iPhone Camera Lab</title>
+</head>
+<body>
+  <h2>Camera Permission Test</h2>
+  <p>Camera access requires your permission.</p>
+
+  <button id="start">Start Camera</button>
+  <button id="stop">Stop Camera</button>
+
+  <p id="status">Camera stopped</p>
+  <video id="camera" autoplay playsinline muted
+         style="width:100%;max-width:500px"></video>
+
+  <script>
+    const video = document.getElementById("camera");
+    const status = document.getElementById("status");
+    let stream = null;
+
+    document.getElementById("start").onclick = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false
+        });
+
+        video.srcObject = stream;
+        status.textContent = "Camera is active";
+      } catch (error) {
+        status.textContent = "Camera error: " + error.message;
+      }
+    };
+
+    document.getElementById("stop").onclick = () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+
+      video.srcObject = null;
+      status.textContent = "Camera stopped";
+    };
+  </script>
+</body>
+</html>
